@@ -1,4 +1,4 @@
-### Ruxe :: Rust Open Editor 
+# Ruxe :: Rust Open Editor 
 
-### CONTRIBUTING
+## CONTRIBUTING
 [CONTRIBUTING](CONTRIBUTING.md)
