@@ -1,16 +1,16 @@
-fn greet(name: &str) {
-    println!("안녕하세요. {}", name);
-}
+mod ui;
+mod commands;
+
+use druid::{AppLauncher, WindowDesc};
+use ui::build_ui;
 
 fn main() {
-    let mut a = 1;
-    a = 2;
+    let main_window = WindowDesc::new(build_ui())
+        .menu(crate::commands::main_menu)
+        .title("Ruxe")
+        .window_size((600.0, 500.0));
 
-    let s1 = String::from("hello");
-    let len = calculate_length(&s1);
-    fn calculate_length(s: &String) -> usize {
-        s.len()
-    }
-    greet("Hello\n");
-    println!("{}", a);
+    AppLauncher::with_window(main_window)
+        .launch(String::new())
+        .expect("Failed to launch the application");
 }

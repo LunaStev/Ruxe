@@ -1,1 +1,1 @@
-### Ruxe :: Rust Open Edition 
+### Ruxe :: Rust Open Editor 
