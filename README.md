@@ -4,7 +4,7 @@
 [CONTRIBUTING](CONTRIBUTING.md)
 
 
-## Special Thanks To:
+## Editor used:
 
 [<img src="https://resources.jetbrains.com/storage/products/clion/img/meta/clion_logo_300x300.png" alt="" width="150">](https://www.jetbrains.com)
 
