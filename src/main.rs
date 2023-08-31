@@ -13,7 +13,7 @@ struct AppData {
 }
 
 fn main() {
-    let file_list = Arc::new(vec!["file1.rs".into(), "file2.rs".into(), "file3.rs".into()]);
+    let file_list = Arc::new(vec!["file1.rs".to_string(), "file2.rs".to_string(), "file3.rs".to_string()]);
 
     let main_window = WindowDesc::new(build_ui)
         .menu(crate::commands::main_menu)
@@ -22,7 +22,7 @@ fn main() {
 
     let data = AppData {
         code: String::new(),
-        file_list: vec!["file1.rs".to_string(), "file2.rs".to_string(), "file3.rs".to_string()],
+        file_list,
     };
 
     AppLauncher::with_window(main_window)
