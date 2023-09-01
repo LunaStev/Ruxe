@@ -1,32 +1,21 @@
-mod ui;
 mod commands;
+mod ui;
 
-use druid::{AppLauncher, WindowDesc};
-use ui::build_ui;
-use druid::Data;
-use druid::kurbo::Arc;
+use druid::AppLauncher;
+use druid::PlatformError;
+use druid::WindowDesc;
 
-#[derive(Data, Clone)]
-struct AppData {
-    code: String,
-    file_list: Vec<String>
-}
+//... 기타 코드 ...
 
-fn main() {
-    let file_list = Arc::new(vec!["file1.rs".to_string(), "file2.rs".to_string(), "file3.rs".to_string()]);
-
-    let main_window = WindowDesc::new(build_ui)
-        .menu(crate::commands::main_menu)
-        .title("Ruxe IDE")
-        .window_size((800.0, 600.0));
-
-    let data = AppData {
-        code: String::new(),
-        file_list,
-    };
+fn main() -> Result<(), PlatformError> {
+    let main_window = WindowDesc::new(ui::build_ui())
+        .title("Ruxe")
+        .window_size((800.0, 600.0))
+        .menu(|_window_id, _data, _env| {
+            ui::build_menu()
+        });
 
     AppLauncher::with_window(main_window)
-        .launch(data)
-        .expect("Failed to launch the application");
-
+        .use_simple_logger()
+        .launch(ui::default_text())
 }

@@ -1,40 +1,61 @@
-use druid::{AppLauncher, Data, lens, Widget, widget::{Flex, TextBox, Label, List, Button, Scroll}, WidgetExt};
-use crate::commands::RUN_CODE;
+use crate::commands::{file_dialog_options, SAVE_AS};
+use druid::widget::{Align, Flex, TextBox};
+use druid::{Event, WindowId};
+use druid::AppDelegate;
+use druid::Command;
+use druid::Data;
+use druid::DelegateCtx;
+use druid::Env;
+use druid::Lens;
+use druid::menu::MenuDesc;
+use druid::Widget;
+use druid::WidgetExt;
+use crate::commands;
 
-#[derive(Data, Clone)]
-struct AppData {
-    code: String,
-    file_list: Vec<String>,
+#[derive(Clone, Data, Lens)]
+pub struct EditorState {
+    text: String,
 }
 
-pub fn build_ui() -> impl Widget<AppData> {
-    let editor = TextBox::multiline()
-        .with_placeholder("Write your Rust code here...")
-        .lens(lens!(AppData, code))  // Focus on the code field of AppData
-        .expand_width();
-
-    let terminal = TextBox::multiline()
-        .with_placeholder("Output will be shown here...")
-        .fix_height(200.0)
-        .expand_width();
-
-    let run_button = Button::new("Run")
-        .on_click(|ctx, data: &mut AppData, _env| {
-            ctx.submit_command(RUN_CODE);
-        });
-
-    let file_explorer = List::new(|| {
-        Label::new(|item: &String, _env: &_| item.clone())
-    })
-        .lens(lens!(AppData, file_list))  // Focus on the file_list field of AppData
-        .scroll()
-        .fix_width(200.0);
-
-    Flex::row()
-        .with_child(file_explorer)
-        .with_flex_child(Flex::column()
-                             .with_child(editor)
-                             .with_child(terminal)
-                             .with_child(run_button), 1.0)
+pub fn default_text() -> EditorState {
+    EditorState {
+        text: "Write something...".into(),
+    }
 }
 
+pub fn build_ui() -> impl Widget<EditorState> {
+    let textbox = TextBox::new()
+        .with_placeholder("Write something...")
+        .lens(EditorState::text);
+
+    let layout = Flex::column().with_flex_child(textbox, 1.0);
+
+    Align::centered(layout)
+}
+
+pub fn build_menu() -> MenuDesc<EditorState> {
+    MenuDesc::empty().append_entry(commands::make_file_menu())
+}
+
+pub struct Delegate;
+
+impl AppDelegate<EditorState> for Delegate {
+    fn event(
+        &mut self,
+        ctx: &mut DelegateCtx,
+        window_id: WindowId,
+        event: Event,
+        data: &mut EditorState,
+        env: &Env,
+    ) -> Option<Event> {
+        if let Event::Command(cmd) = &event {
+            if let Some(info) = cmd.get(druid::commands::OPEN_FILE) {
+                // Implement opening a file here
+            } else if cmd.is(SAVE_AS) {
+                ctx.submit_command(Command::new(druid::commands::SHOW_SAVE_PANEL, file_dialog_options(), druid::Target::Global));
+
+            }
+        }
+        Some(event)
+    }
+}
