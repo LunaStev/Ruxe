@@ -1,16 +1,21 @@
-mod ui;
 mod commands;
+mod ui;
 
-use druid::{AppLauncher, WindowDesc};
-use ui::build_ui;
+use druid::AppLauncher;
+use druid::PlatformError;
+use druid::WindowDesc;
 
-fn main() {
-    let main_window = WindowDesc::new(build_ui())
-        .menu(crate::commands::main_menu)
+//... 기타 코드 ...
+
+fn main() -> Result<(), PlatformError> {
+    let main_window = WindowDesc::new(ui::build_ui())
         .title("Ruxe")
-        .window_size((600.0, 500.0));
+        .window_size((800.0, 600.0))
+        .menu(|_window_id, _data, _env| {
+            ui::build_menu()
+        });
 
     AppLauncher::with_window(main_window)
-        .launch(String::new())
-        .expect("Failed to launch the application");
+        .use_simple_logger()
+        .launch(ui::default_text())
 }
